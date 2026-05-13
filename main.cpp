@@ -64,7 +64,9 @@ int main(){
                     break;
                 case 8:
                     // Lógica para salvar dados e sair
-                    break;
+                    meuMenu.salvarDados();
+                    cout << "Saindo do sistema..." << endl;
+                    return 0;
                 case 0:
                     cout << "Saindo do sistema..." << endl;
                     return 0;

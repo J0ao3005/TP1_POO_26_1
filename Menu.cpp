@@ -361,3 +361,48 @@ Menu :: ~Menu() {
     }
     transacoes.clear();
 }
+
+void Menu :: salvarDados(){
+    cout << "\n --- SALVANDO DADOS NO DISCO ---" << endl;
+
+    //1. Salvando clientes
+    // Salva caso o arquivo não existam, ou apaga e reescreve caso já exista
+    ofstream arquivoClientes("clientes.csv");
+
+    if(arquivoClientes.is_open()){
+        for(Cliente *c : Todosclientes){
+            arquivoClientes << c->getNome() << ","
+                            << c->getTrabalho() << ","
+                            << c->getLogin() << ","
+                            << c->getSenha() << ","
+                            << c->getRemuneracao() << ","
+                            << c->getTipoDeConta() << ","
+                            << c->getRendimento() << ","
+                            << c->getSaldo() << "\n";
+        }
+
+        arquivoClientes.close(); // fechando o arquivo
+        cout << "[OK] Dados dos clientes salvos em 'clientes.csv" << endl;
+    } else {
+        cerr << "[ERRO]: Não foi possivel criar o arquivo clientes.csv!" << endl;
+    }
+
+    //2. Salvando gerentes
+    ofstream arquivoGerentes("gerentes.csv");
+
+    if(arquivoGerentes.is_open()){
+        for(Gerente *g : gerentes){
+            arquivoGerentes << g->getNome() << ","
+                            << g->getTrabalho() << ","
+                            << g-> getLogin() << ","
+                            << g->getSenha() << "\n";
+        }
+
+        arquivoGerentes.close(); // fechando o arquivo
+        cout <<"[OK] Dados dos gerentes salvos em 'gerentes.csv" << endl;
+    } else {
+        cerr << "[ERRO]: Não foi possivel criar o arquivo gerente.csv!" << endl;
+    }
+
+    cout << "\n >> Todos os dados foram salvos com sucesso! <<" << endl;
+}

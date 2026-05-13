@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <vector>
+#include <fstream>
 
 #include "Cliente.h"
 #include "Gerente.h"
@@ -33,6 +34,8 @@ class Menu {
         void criarTransacao();
 
         ~Menu();
+
+        void salvarDados();
 
 };
 

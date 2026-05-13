@@ -22,10 +22,11 @@ void Gerente :: exibirDados(){
     cout << "Trabalho: " << getTrabalho() << endl;
     cout << "Login: " << getLogin() << endl;
     cout << "Senha: " << getSenha() << endl;
-    cout << "Clientes: " << endl;
+    cout << "\nClientes: " << endl;
     
     for (Cliente* cliente : getCliente()) {
         cliente->exibirDados();
+        cout <<"\n";
         cout << "------------------------" << endl;
     }
 }
