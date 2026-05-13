@@ -3,9 +3,13 @@
 #include <cctype>
 #include <algorithm>
 
+Menu :: Menu() {
+    carregarDados();
+}
+
 // Implementação dos métodos da classe Menu
 void Menu :: exibirMenu(){
-    cout << "\t ====== SISTEMA DE GERENCIAMENTO DE BANCO ======" << endl;
+    cout << "\n\t ====== SISTEMA DE GERENCIAMENTO DE BANCO ======" << endl;
     cout << "1. Cadastrar cliente" << endl;
     cout << "2. Cadastrar gerente" << endl;
     cout << "3. Criar transação" << endl;
@@ -18,6 +22,7 @@ void Menu :: exibirMenu(){
     cout << "\t ================================================" << endl;
     cout << "Escolha uma opção: ";
 }
+
 
 // Método para cadastrar um cliente
 void Menu :: cadastrarCliente() {
@@ -172,7 +177,7 @@ void Menu :: associarGerenteCliente(){
     gerentes[idGerente]-> adicionarCliente(Todosclientes[idCliente]);
 
     cout << "\n >> Associação realizada com sucesso! <<" << endl;
-    cout << Todosclientes[idCliente]->getNome() << "agora é cliente de: " << gerentes[idGerente]->getNome() <<"." << endl;;
+    cout << Todosclientes[idCliente]->getNome() << " agora é cliente de: " << gerentes[idGerente]->getNome() <<"." << endl;;
 }
 
 void Menu :: extratoCliente(){
@@ -405,4 +410,60 @@ void Menu :: salvarDados(){
     }
 
     cout << "\n >> Todos os dados foram salvos com sucesso! <<" << endl;
+}
+
+void Menu :: carregarDados(){
+    string linha, dados;
+
+    // Carregando clientes
+    ifstream arquivoClientes("clientes.csv");
+    if(arquivoClientes.is_open()){
+        while(getline(arquivoClientes, linha)){
+            stringstream ss(linha);
+            vector<string> campos;
+
+            // Separando as linhas por virgula
+            while (getline(ss, dados, ',')){
+                campos.push_back(dados);
+            }
+
+            // Atribuindo os campos (na mesma ordem que foram salvos)
+            if(campos.size() >= 8){
+                string nome = campos[0];
+                string trabalho = campos[1];
+                string login = campos[2];
+                string senha = campos[3];
+                double remuneracao = stod(campos[4]); // converte string para double
+                string tipoDeConta = campos[5];
+                double taxa = stod(campos[6]);
+                double saldo = stod(campos[7]);
+
+                Cliente *c = new Cliente (nome, trabalho, login, senha, remuneracao, tipoDeConta, taxa, saldo);
+                Todosclientes.push_back(c);
+            }
+        }
+        arquivoClientes.close();
+        cout << "[SISTEMA]: Clientes carregados com sucesso." << endl;
+    }
+
+    // Carregandos gerentes
+    ifstream arquivoGerentes("gerentes.csv");
+    if(arquivoGerentes.is_open()){
+        while(getline(arquivoGerentes, linha)){
+            stringstream ss(linha);
+            vector<string> campos;
+
+            while (getline(ss, dados, ',')){
+                campos.push_back(dados);
+
+                if(campos.size() >= 4){
+                    vector<Cliente *> clientesVazio;
+                    Gerente *g = new Gerente(campos[0], campos[1], campos[2], campos[3], clientesVazio);
+                    gerentes.push_back(g);
+                }
+            }
+            arquivoGerentes.close();
+            cout << "[SISTEMA]: Gerentes carregados com sucesso" << endl;
+        }
+    }
 }
