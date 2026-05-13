@@ -30,6 +30,8 @@ class Menu {
 
         void associarGerenteCliente();
 
+        void extratoCliente();
+
         ~Menu();
 
 };

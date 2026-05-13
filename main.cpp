@@ -46,6 +46,7 @@ int main(){
                     break;
                 case 4:
                     // Lógica para exibir extrato de um cliente
+                    meuMenu.extratoCliente();
                     break;
                 case 5:
                     // Lógica para associar gerente a cliente

@@ -168,10 +168,48 @@ void Menu :: associarGerenteCliente(){
         return;
     }
 
+    // Adicionando o cliente especifico a lista do gerente
     gerentes[idGerente]-> adicionarCliente(Todosclientes[idCliente]);
 
     cout << "\n >> Associação realizada com sucesso! <<" << endl;
     cout << Todosclientes[idCliente]->getNome() << "agora é cliente de: " << gerentes[idGerente]->getNome() <<"." << endl;;
+}
+
+void Menu :: extratoCliente(){
+    cout << "\n --- EXTRATOS DE CLIENTES ---" << endl;
+
+    if(Todosclientes.empty()){
+        cout<<"Erro: É necessário ter ao menos um cliente registrado." << endl;
+        return;
+    }
+
+    cout << " >> Clientes disponíveis\n";
+    for(size_t i = 0; i < Todosclientes.size(); i++){
+        cout << "[" << i << "] - Nome: " << Todosclientes[i]->getNome() <<  endl;
+    }
+
+    int idCliente;
+    cout << "Digite o número do Cliente Desejado: ";
+    cin >> idCliente;
+
+    if(idCliente < 0 || idCliente >= (int)Todosclientes.size()){
+        cout << "Erro: Cliente inválido." << endl;
+        return;
+    }
+
+    // Lista de transações do cliente escolhido
+    vector <Transacao*> extratoDoCliente = Todosclientes[idCliente]->getExtrato();
+
+    if(extratoDoCliente.empty()){
+       cout << "\n Este cliente ainda não realizou nenhuma transação." << endl;
+    } else {
+        cout << "\n >> Extrato de " << Todosclientes[idCliente]->getNome() << " <<" << endl;
+
+        for(Transacao * t : extratoDoCliente){
+            t->exibirTransacao();
+            cout << "-----------------------------------" << endl;
+        }
+    }
 }
 
 // Método para listar os clientes cadastrados
