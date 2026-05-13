@@ -3,8 +3,9 @@
 #include <limits>
 #include <stdexcept>
 
-#include "Menu.h"
 
+// Bibliotecas Próprias
+#include "Menu.h"
 #include "Pessoa.h"
 #include "Cliente.h"
 #include "Gerente.h"
@@ -43,6 +44,7 @@ int main(){
                     break;
                 case 3:
                     // Lógica para criar transação
+                    meuMenu.criarTransacao();
                     break;
                 case 4:
                     // Lógica para exibir extrato de um cliente

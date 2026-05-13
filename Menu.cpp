@@ -212,6 +212,135 @@ void Menu :: extratoCliente(){
     }
 }
 
+void Menu :: criarTransacao(){
+    cout <<"\n --- NOVA TRANSAÇÃO --- " << endl;
+
+    if(Todosclientes.empty()){
+        cout << "Erro: Nenhum cliente cadastrado para realizar transações!" << endl;
+        return;
+    }
+
+    // Variáveis necessárias para um transação
+    double valor;
+    string tipo, data, horario;
+    vector<Cliente*> clientesEnvolvidos;
+
+    cin.ignore();
+    cout << "Selecione o tipo de Transação (Deposito, Saque, Transferência): ";
+    getline(cin, tipo);
+
+    // Padronizando a string para minúsculo para facilitar a comparação
+    transform(tipo.begin(), tipo.end(), tipo.begin(), :: tolower);
+
+    while (tipo != "deposito" && tipo != "saque" && tipo != "transferencia"){
+        cout << "Opção invalida! Digite 'deposito', 'saque' ou 'transferencia'." << endl;
+        getline(cin,tipo);
+        // Padronizando a string para minúsculo para facilitar a comparação
+        transform(tipo.begin(), tipo.end(), tipo.begin(), :: tolower);
+    }
+
+    cout << "Valor: R$";
+    cin >> valor;
+    cin.ignore();
+
+    cout << "DATA (DD/MM/AAAA): ";
+    getline(cin, data);
+
+    cout << "Horário (HH:MM): ";
+    getline(cin, horario);
+
+    // Lógica de Depoisito e Saque (1 Cliente)
+    if(tipo == "deposito" || tipo == "saque")
+    {
+        cout << "\n >> CLientes disponíveis:\n";
+        for(size_t i = 0; i < Todosclientes.size(); i++){
+            cout << "[" << i << "] - Nome: " << Todosclientes[i]->getNome() << " | Saldo Atual: R$" << Todosclientes[i]->getSaldo() << endl;
+        }
+
+        int id;
+        cout << "Digite o número do cliente: ";
+        cin >> id;
+
+        if(id < 0 || id >= (int)Todosclientes.size()){
+            cout << "Erro: Cliente inválido." << endl;
+            return;
+        }
+
+        Cliente * clienteEscolhido = Todosclientes[id];
+        clientesEnvolvidos.push_back(clienteEscolhido);
+
+        //Atualizando o saldo
+        if(tipo == "deposito")
+        {
+            clienteEscolhido->setSaldo(clienteEscolhido->getSaldo() + valor);
+        } else if (tipo == "saque")
+        {
+            //Validando o saldo
+            if(clienteEscolhido->getSaldo() < valor){
+                cout << "Erro: Saldo insuficiente para o saque." << endl;
+                return;
+            }
+            clienteEscolhido->setSaldo(clienteEscolhido->getSaldo() - valor);
+        }
+    } else if (tipo == "transferencia")
+        { // Lógica de transferencia (2 clientes)
+        
+            if(Todosclientes.size() < 2){
+                cout << "Erro: É necessário ter pelo menos 2 clientes para uma transferência." << endl;
+                return;
+            }
+
+            cout << "\n >> CLientes disponíveis: ";
+            for(size_t i = 0; i < Todosclientes.size(); i++){
+                cout << "[" << i << "] - Nome: " << Todosclientes[i]->getNome() << " | Saldo Atual: R$" << Todosclientes[i]->getSaldo() << endl;
+            }
+
+            int idOrigem, idDestino;
+            cout << "Digite o número do cliente que vai ENVIAR o dinheiro: ";
+            cin >> idOrigem;
+            cout << "Digite o número do cliente que vai RECEBER o dinheiro: ";
+            cin >> idDestino;
+
+            if(idOrigem < 0 || idOrigem >= (int)Todosclientes.size() || idDestino < 0 || idDestino >= (int)Todosclientes.size()){
+                cout << "Erro: CLientes inválidos." << endl;
+                return;
+            }
+
+            Cliente * remetente = Todosclientes[idOrigem];
+            Cliente * destinatario = Todosclientes[idDestino];
+
+            if(remetente->getSaldo() < valor){
+                cout<< "Erro: Saldo insuficiente para transfêrencia." << endl;
+                return;
+            }
+
+            // Adicionando os dois valores no vetor de transação
+            clientesEnvolvidos.push_back(remetente);
+            clientesEnvolvidos.push_back(destinatario);
+
+
+        } else {
+            cout << "Erro: Tipo de transação inválido." << endl;
+            return;
+        }
+
+
+        // -- Finalizando e salvando todas as transações
+        Transacao * novaTransacao = new Transacao (tipo,valor,data,horario, clientesEnvolvidos);
+
+        //Salva na lista geral do banco
+        transacoes.push_back(novaTransacao);
+
+        //Salva no extrato particular de cada cliente envolvido
+        for(Cliente * c : clientesEnvolvidos){
+            c->setTransacao(novaTransacao);
+        }
+
+        cout << "\n >> Transação realizada com sucesso! <<" << endl;
+
+
+}
+
 // Método para listar os clientes cadastrados
 Menu :: ~Menu() {
     // Liberar memória alocada para clientes

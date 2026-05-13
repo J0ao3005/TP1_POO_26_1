@@ -29,8 +29,8 @@ class Menu {
         void listarGerentes();
 
         void associarGerenteCliente();
-
         void extratoCliente();
+        void criarTransacao();
 
         ~Menu();
 

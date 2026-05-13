@@ -45,7 +45,7 @@ void Transacao :: exibirTransacao() {
     cout << "Valor: " << valor << endl;
     cout << "Data: " << data << endl;
     cout << "Horario: " << horario << endl;
-    cout << "Clientes envolvidos na transação:" << endl;
+    cout << "\nClientes envolvidos na transação:" << endl;
     for (Cliente* cliente : clientes) {
         cliente->exibirDados();
         cout << endl;
