@@ -6,6 +6,7 @@
 #include "Pessoa.h"
 
 class Transacao; // Declaração antecipada da classe Transacao
+class CartaoDeCredito;
 
 class Cliente: public Pessoa {
     private:
@@ -14,6 +15,7 @@ class Cliente: public Pessoa {
         double taxaDeRendimento;
         double saldo;
         vector <Transacao*> transacoes;
+        CartaoDeCredito * cartao;
     public:
 
         // Construtor
@@ -35,6 +37,9 @@ class Cliente: public Pessoa {
 
         // Método para exibir os dados do cliente
         void exibirDados() override;
+
+        void setCartao (CartaoDeCredito *novoCartao);
+        CartaoDeCredito *getCartao();
 };
 
 #endif // CLIENTE_H

@@ -1,5 +1,6 @@
 #include "Cliente.h"
 #include "Transacao.h"
+#include "CartaoDeCredito.h"
 
 Cliente :: Cliente (string nome, string trabalho, string login, string senha, double remuneracao, string tipoDeConta, double taxaDeRendimento, double saldo) : 
     Pessoa(nome, trabalho, login, senha), remuneracao(remuneracao), tipoDeConta(tipoDeConta), taxaDeRendimento(taxaDeRendimento), saldo(saldo) {}
@@ -54,4 +55,12 @@ void Cliente :: exibirDados() {
     cout << "Tipo de Conta: " << getTipoDeConta() << endl;
     cout << "Saldo: R$" << getSaldo() << endl;
     cout << "Taxa de Rendimento: " << getRendimento() * 100 << "%" << endl;
+}
+
+void Cliente :: setCartao (CartaoDeCredito * novoCartao){
+    this->cartao = novoCartao;
+}
+
+CartaoDeCredito * Cliente :: getCartao (){
+    return cartao;
 }

@@ -34,6 +34,8 @@ class Menu {
         void extratoCliente();
         void criarTransacao();
 
+        void menuCartao();
+
         ~Menu();
         Menu();
 

@@ -18,6 +18,7 @@ void Menu :: exibirMenu(){
     cout << "6. Listar clientes" << endl;
     cout << "7. Listar gerentes" << endl;
     cout << "8. Salvar dados e sair" << endl;
+    cout << "9. Gerenciar Cartão de Crédito" << endl;
     cout << "0. Sair" << endl;
     cout << "\t ================================================" << endl;
     cout << "Escolha uma opção: ";

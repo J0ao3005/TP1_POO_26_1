@@ -67,6 +67,9 @@ int main(){
                     meuMenu.salvarDados();
                     cout << "Saindo do sistema..." << endl;
                     return 0;
+                case 9:
+                    meuMenu.menuCartao();
+                    break;
                 case 0:
                     cout << "Saindo do sistema..." << endl;
                     return 0;
