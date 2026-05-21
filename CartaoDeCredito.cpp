@@ -39,7 +39,7 @@ bool CartaoDeCredito :: realizarCompra (double valor, int parcelas){
 
     faturaAtual += valor;
 
-    cout <<" Compra de R$" << valor << " aprovada em" << parcelas << "x de R$" << (valor/parcelas) << "." << endl;
+    cout <<" Compra de R$" << valor << " aprovada em " << parcelas << "x de R$" << (valor/parcelas) << "." << endl;
     return true;
 }
 

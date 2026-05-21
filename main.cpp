@@ -10,6 +10,7 @@
 #include "Cliente.h"
 #include "Gerente.h"
 #include "Transacao.h"
+#include "CartaoDeCredito.h"
 
 using namespace std;
 

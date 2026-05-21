@@ -1,4 +1,5 @@
 #include "Menu.h"
+#include "CartaoDeCredito.h"
 
 #include <cctype>
 #include <algorithm>
@@ -467,4 +468,154 @@ void Menu :: carregarDados(){
             cout << "[SISTEMA]: Gerentes carregados com sucesso" << endl;
         }
     }
+}
+
+void Menu :: menuCartao(){
+    cout <<"\n --- GERENCIAMENTO DE CARTÃO DE CRÉDITO ---" << endl;
+
+    if(Todosclientes.empty()){
+        cout <<"Erro: Nenhum cliente cadastrado." << endl;
+        return;
+    }
+
+    //1. Seleciona o cliente primeiro
+    cout <<"\n >>> Clientes Disponíveis:\n";
+    for(size_t i = 0; i < Todosclientes.size(); i++){
+        cout << "[" << i << "] - Nome: " << Todosclientes[i]->getNome() << endl;
+    }
+
+    int idCliente;
+    cout <<"Digite o número do cliente: ";
+    cin >> idCliente;
+
+    if(idCliente < 0 || idCliente >= (int)Todosclientes.size()){
+        cout <<"Erro: Cliente Inválido." << endl;
+        return;
+    }
+
+    Cliente * clienteAtual = Todosclientes[idCliente];
+    int opcaoCartao;
+
+    //2. Sub-Menu do Cartão
+    do{
+        cout << "\n\t === CARTÃO DE " << clienteAtual->getNome() << " ===" << endl;
+        cout << "1. Criar Cartão de Crédito" << endl;
+        cout << "2. Alterar Limite" << endl;
+        cout << "3. Realizar Compra Parcelada" << endl;
+        cout << "4. Ver e Pagar Fatura" << endl;
+        cout << "5. Bloquear / Desbloquear Cartão" << endl;
+        cout << "0. Voltar ao Menu Principal" << endl;
+        cout << "\t ==========================================" << endl;
+        cout << "Escolha uma opção: ";
+        cin >> opcaoCartao;
+
+        CartaoDeCredito * cartao = clienteAtual -> getCartao(); // Pegando o cartão
+
+        switch (opcaoCartao){
+            case 1: { // Cria o cartão
+                if(cartao != nullptr){
+                    cout << "Este cliente já possui um cartão de crédito!" << endl;
+                } else {
+                    // Defindo o limite inicial de acordo com a remuneração
+                    double limiteCalculado = clienteAtual -> getRemuneracao() * 0.5;
+                    CartaoDeCredito* novoCartao = new CartaoDeCredito(limiteCalculado);
+                    clienteAtual->setCartao(novoCartao);
+
+                    cout << ">>> Cartão criado com sucesso! Limite pré-aprovado: R$" << limiteCalculado << " <<<" << endl;
+
+                }
+                break;
+            }
+            case 2: { // Alterar o limite
+                if(cartao == nullptr){
+                    cout << "Erro: Cliente não possui cartão." << endl;
+                    break;
+                }
+
+                double novoLimite;
+                cout <<"Limite atual: R$" << cartao->getLimite() << endl;
+                cout <<"Digite o novo limite: R$";
+                cin >> novoLimite;
+                cartao->alterarLimite(novoLimite);
+                cout << "Limite alterado com sucesso! <<<" << endl;
+                break;
+            }
+            case 3: { // Realizar Compra
+                if(cartao == nullptr){
+                    cout << "Erro: Cliente não possui cartão." << endl;
+                    break;
+                }
+
+                double valor;
+                int parcelas;
+
+                cout <<"Valor de compra: R$";
+                cin >> valor;
+                cout <<"Número de parcelas: ";
+                cin >> parcelas;
+
+                if(parcelas <= 0){
+                    parcelas = 1;
+                }
+
+                cartao->realizarCompra(valor, parcelas);
+                break;
+            }
+            case 4: { // Paga fatura
+                if(cartao == nullptr){
+                    cout << "Erro: Cliente não possui cartão." << endl;
+                    break;
+                }
+
+                cout <<"\nFatura atual: R$" << cartao->getfaturaAtual() << endl;
+                cout <<"Saldo em conta: R$" << clienteAtual->getSaldo() << endl;
+
+                if(cartao->getfaturaAtual() <= 0){
+                    cout <<"A fatura já está zerada!" << endl;
+                    break;
+                }
+
+                double valorPagamento;
+                cout <<"Digite o valor que deseja pagar: R$";
+                cin >> valorPagamento;
+
+                //Validação
+                if(valorPagamento > clienteAtual->getSaldo()){
+                    cout <<"Erro: Saldo em conta insuficiente para esse pagamento." << endl;       
+                } else if (valorPagamento <= 0) {
+                    cout <<"Valor inválido." << endl;
+                } else {
+                    //Atualizando o saldo do cliente
+                    clienteAtual->setSaldo(clienteAtual->getSaldo() - valorPagamento);
+
+                    //Abatendo o valor na fatura do cartão
+                    cartao->pagarFatura(valorPagamento);
+
+                    cout << ">>> Pagamento realizado! Novo saldo em conta: R$" << clienteAtual->getSaldo() << " <<<" << endl;                    
+                }
+                break;
+            }
+            case 5: {
+                if(cartao == nullptr){
+                    cout << "Erro: Cliente não possui cartão." << endl;
+                    break;
+                }
+
+                if(cartao->getBloqueado()){
+                    cartao->desbloquear();
+                    cout << ">>> Cartão DESBLOQUEADO com sucesso. <<<" << endl;
+                } else {
+                    cartao->bloquear();
+                    cout << ">>> Cartão BLOQUEADO com sucesso. <<<" << endl;
+                }
+                break;
+            }
+            case 0:
+                cout << "Voltando ao menu principal..." << endl;
+                break;
+            default:
+                cout <<"Opção Inválida" << endl;
+        }
+
+    } while(opcaoCartao != 0);
 }
