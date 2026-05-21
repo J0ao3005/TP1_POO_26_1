@@ -575,9 +575,16 @@ void Menu :: menuCartao(){
                     break;
                 }
 
+
                 double valorPagamento;
                 cout <<"Digite o valor que deseja pagar: R$";
                 cin >> valorPagamento;
+
+                //Caso o valor de pagamento seja maior do que a divida, o sistema corrige o valor
+                if(valorPagamento > cartao->getfaturaAtual()){
+                    cout<< "[Aviso]: Valor maior que a fatura! Ajustando o pagamento para o total da dívida: R$" << cartao->getfaturaAtual() << endl;
+                    valorPagamento = cartao->getfaturaAtual();
+                }
 
                 //Validação
                 if(valorPagamento > clienteAtual->getSaldo()){
