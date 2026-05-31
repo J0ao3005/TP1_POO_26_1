@@ -2,8 +2,12 @@
 #include "Transacao.h"
 #include "CartaoDeCredito.h"
 
-Cliente :: Cliente (string nome, string trabalho, string login, string senha, double remuneracao, string tipoDeConta, double taxaDeRendimento, double saldo) : 
-    Pessoa(nome, trabalho, login, senha), remuneracao(remuneracao), tipoDeConta(tipoDeConta), taxaDeRendimento(taxaDeRendimento), saldo(saldo) {}
+Cliente :: Cliente (string nome, string dataDeNascimento, string trabalho, string login, string senha, double remuneracao, string tipoDeConta, double taxaDeRendimento, double saldo) : 
+    Pessoa(nome, trabalho, login, senha), dataDeNascimento(dataDeNascimento), remuneracao(remuneracao), tipoDeConta(tipoDeConta), taxaDeRendimento(taxaDeRendimento), saldo(saldo) {}
+
+string Cliente :: getDataDeNascimento() {
+    return dataDeNascimento;
+}
 
 double Cliente :: getRemuneracao() {
     return remuneracao;
@@ -48,8 +52,13 @@ void Cliente :: setRendimento(double taxaDeRendimento) {
     this->taxaDeRendimento = taxaDeRendimento;
 }
 
+void Cliente :: setDataDeNascimento(string dataDeNascimento) {
+    this->dataDeNascimento = dataDeNascimento;
+}
+    
 void Cliente :: exibirDados() {
     cout << "Nome: " << getNome() << endl;
+    cout << "Data de Nascimento: " << getDataDeNascimento() << endl;
     cout << "Trabalho: " << getTrabalho() << endl;
     cout << "Login: " << getLogin() << endl;
     cout << "Tipo de Conta: " << getTipoDeConta() << endl;

@@ -42,7 +42,7 @@ void Transacao :: setClientes(Cliente* cliente) {
 
 void Transacao :: exibirTransacao() {
     cout << "Tipo: " << tipo << endl;
-    cout << "Valor: " << valor << endl;
+    cout << "Valor: R$" << valor << endl;
     cout << "Data: " << data << endl;
     cout << "Horario: " << horario << endl;
     cout << "\nClientes envolvidos na transação:" << endl;

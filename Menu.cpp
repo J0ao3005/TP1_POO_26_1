@@ -30,7 +30,7 @@ void Menu :: exibirMenu(){
 void Menu :: cadastrarCliente() {
     // Lógica para cadastrar cliente
     cout << "\n --- CADASTRO DE CLIENTE --- \n" << endl;
-    string nome, trabalho, login, senha, tipoDeConta;
+    string nome,dataNascimento ,trabalho, login, senha, tipoDeConta;
     double remuneracao, taxaDeRendimento = 0.0, saldo;
 
     cin.ignore(); // Limpar o buffer do cin
@@ -38,6 +38,9 @@ void Menu :: cadastrarCliente() {
     // Solicitar informações do cliente
     cout << "Nome completo: ";
     getline(cin, nome);
+
+    cout << "Data de Nascimento (DD//MM/AAAA): ";
+    getline(cin, dataNascimento);
 
     cout << "Trabalho: ";
     getline(cin, trabalho);
@@ -73,7 +76,7 @@ void Menu :: cadastrarCliente() {
 
     try{
         // Cria um novo cliente e adicionar à lista
-        Cliente* novoCliente = new Cliente(nome, trabalho, login, senha, remuneracao, tipoDeConta, taxaDeRendimento, saldo);
+        Cliente* novoCliente = new Cliente(nome, dataNascimento,trabalho, login, senha, remuneracao, tipoDeConta, taxaDeRendimento, saldo);
         Todosclientes.push_back(novoCliente);
         cout << " >>> Cliente cadastrado com sucesso! <<< \n" << endl;
     }
@@ -88,14 +91,29 @@ void Menu :: cadastrarCliente() {
 }
 
 void Menu :: listarClientes(){
-    cout << "\n --- LISTA DE CLIENTES --- \n" << endl;
+    cout << "\n --- BUSCAR CLIENTE --- \n" << endl;
     if(Todosclientes.empty()){
         cout << "Nenhum cliente cadastrado." << endl;
-    } else {
-        for (const auto& cliente : Todosclientes) {
+    }
+
+    cin.ignore();
+    string nomeBusca;
+
+    cout <<"Digite o nome exato do cliente que deseja buscar: "<< endl;
+    getline(cin, nomeBusca);
+
+    bool encontrou = false;
+    for(Cliente* cliente : Todosclientes){
+        if(cliente->getNome() == nomeBusca){
+            cout <<"\n--- Dados do Cliente ---" << endl;
             cliente->exibirDados();
-            cout << endl;
+            encontrou = true;
+            break;
         }
+    }
+
+    if(!encontrou){
+        cout << "Erro: Cliente não encontrado no sistema!" << endl;
     }
 }
 
@@ -126,17 +144,30 @@ void Menu :: cadastrarGerente(){
 }
 
 void Menu :: listarGerentes(){
-
-    cout << "\n --- LISTA DE GERENTES --- \n" << endl;
+    cout << "\n --- BUSCAR GERENTE --- \n" << endl;
     if(gerentes.empty()){
         cout << "Nenhum gerente cadastrado." << endl;
-    } else {
-        for (const auto& gerente : gerentes) {
+    }
+
+    cin.ignore();
+    string nomeBusca;
+
+    cout <<"Digite o nome exato do gerente que deseja buscar: "<< endl;
+    getline(cin, nomeBusca);
+
+    bool encontrou = false;
+    for(Gerente* gerente : gerentes){
+        if(gerente->getNome() == nomeBusca){
+            cout <<"\n--- Dados do Gerente ---" << endl;
             gerente->exibirDados();
-            cout << endl;
+            encontrou = true;
+            break;
         }
     }
 
+    if(!encontrou){
+        cout << "Erro: Gerente não encontrado no sistema!" << endl;
+    }
 }
 
 void Menu :: associarGerenteCliente(){
@@ -297,7 +328,7 @@ void Menu :: criarTransacao(){
                 return;
             }
 
-            cout << "\n >> CLientes disponíveis: ";
+            cout << "\n >> CLientes disponíveis: \n";
             for(size_t i = 0; i < Todosclientes.size(); i++){
                 cout << "[" << i << "] - Nome: " << Todosclientes[i]->getNome() << " | Saldo Atual: R$" << Todosclientes[i]->getSaldo() << endl;
             }
@@ -320,6 +351,10 @@ void Menu :: criarTransacao(){
                 cout<< "Erro: Saldo insuficiente para transfêrencia." << endl;
                 return;
             }
+
+            // Subtrai do remetente e soma no destinatário
+            remetente->setSaldo (remetente->getSaldo() - valor);
+            destinatario->setSaldo(destinatario->getSaldo() + valor);
 
             // Adicionando os dois valores no vetor de transação
             clientesEnvolvidos.push_back(remetente);
@@ -379,6 +414,7 @@ void Menu :: salvarDados(){
     if(arquivoClientes.is_open()){
         for(Cliente *c : Todosclientes){
             arquivoClientes << c->getNome() << ","
+                            << c->getDataDeNascimento() << ","
                             << c->getTrabalho() << ","
                             << c->getLogin() << ","
                             << c->getSenha() << ","
@@ -430,17 +466,18 @@ void Menu :: carregarDados(){
             }
 
             // Atribuindo os campos (na mesma ordem que foram salvos)
-            if(campos.size() >= 8){
+            if(campos.size() >= 9){
                 string nome = campos[0];
-                string trabalho = campos[1];
-                string login = campos[2];
-                string senha = campos[3];
-                double remuneracao = stod(campos[4]); // converte string para double
-                string tipoDeConta = campos[5];
-                double taxa = stod(campos[6]);
-                double saldo = stod(campos[7]);
+                string dataNascimento = campos[1];
+                string trabalho = campos[2];
+                string login = campos[3];
+                string senha = campos[4];
+                double remuneracao = stod(campos[5]); // converte string para double
+                string tipoDeConta = campos[6];
+                double taxa = stod(campos[7]);
+                double saldo = stod(campos[8]);
 
-                Cliente *c = new Cliente (nome, trabalho, login, senha, remuneracao, tipoDeConta, taxa, saldo);
+                Cliente *c = new Cliente (nome, dataNascimento, trabalho, login, senha, remuneracao, tipoDeConta, taxa, saldo);
                 Todosclientes.push_back(c);
             }
         }
