@@ -4,10 +4,12 @@
 #include <cctype>
 #include <algorithm>
 
+// Construtor: Inicializa o sistema já tentando carregar o estado salvo no disco (CSV)
 Menu :: Menu() {
     carregarDados();
 }
 
+// --- INTERFACE ---
 // Implementação dos métodos da classe Menu
 void Menu :: exibirMenu(){
     cout << "\n\t ====== SISTEMA DE GERENCIAMENTO DE BANCO ======" << endl;
@@ -26,14 +28,14 @@ void Menu :: exibirMenu(){
 }
 
 
-// Método para cadastrar um cliente
+// --- MÉTODOS DE CADASTRO E LISTAGEM ---
 void Menu :: cadastrarCliente() {
     // Lógica para cadastrar cliente
     cout << "\n --- CADASTRO DE CLIENTE --- \n" << endl;
     string nome,dataNascimento ,trabalho, login, senha, tipoDeConta;
     double remuneracao, taxaDeRendimento = 0.0, saldo;
 
-    cin.ignore(); // Limpar o buffer do cin
+    cin.ignore(); // Limpa o buffer do cin para evitar pulos indesejados no getline
 
     // Solicitar informações do cliente
     cout << "Nome completo: ";
@@ -57,8 +59,11 @@ void Menu :: cadastrarCliente() {
     cout << "Tipo de conta (corrente/poupança): ";
     cin >> tipoDeConta;
 
+    // Utiliza a biblioteca <algorithm> da STL para converter o texto para minúsculas
+    // Isso evita erros se o usuário digitar "Poupança", "POUPANÇA" ou "poupança"
     transform(tipoDeConta.begin(), tipoDeConta.end(), tipoDeConta.begin(), ::tolower);
 
+    // Validação de entrada
     while(tipoDeConta != "poupança" && tipoDeConta != "corrente"){
         cout << "Opção Invalida! Digite 'corrente' ou 'poupança': ";
         cin >> tipoDeConta;
@@ -74,6 +79,7 @@ void Menu :: cadastrarCliente() {
     cout << "Saldo inicial: R$";
     cin >> saldo;
 
+    // Bloco Try-Catch para instanciar o objeto com segurança
     try{
         // Cria um novo cliente e adicionar à lista
         Cliente* novoCliente = new Cliente(nome, dataNascimento,trabalho, login, senha, remuneracao, tipoDeConta, taxaDeRendimento, saldo);
@@ -94,6 +100,7 @@ void Menu :: listarClientes(){
     cout << "\n --- BUSCAR CLIENTE --- \n" << endl;
     if(Todosclientes.empty()){
         cout << "Nenhum cliente cadastrado." << endl;
+        return; // Interrompe o método prematuramente se o vetor estiver vazio
     }
 
     cin.ignore();
@@ -106,9 +113,9 @@ void Menu :: listarClientes(){
     for(Cliente* cliente : Todosclientes){
         if(cliente->getNome() == nomeBusca){
             cout <<"\n--- Dados do Cliente ---" << endl;
-            cliente->exibirDados();
+            cliente->exibirDados(); // Aciona o polimorfismo
             encontrou = true;
-            break;
+            break; // Para a busca assim que encontrar
         }
     }
 
@@ -135,8 +142,9 @@ void Menu :: cadastrarGerente(){
     cout << "Senha: ";
     getline(cin, senha);
 
-    vector<Cliente*> clientesIniciais;
+    vector<Cliente*> clientesIniciais; // Inicializa a carteira de clientes vazia
 
+    // Alocação dinâmica e armazenamento no vetor correspondente
     Gerente* gerente = new Gerente (nome, trabalho, login, senha, clientesIniciais);
     gerentes.push_back(gerente);
 
@@ -170,6 +178,9 @@ void Menu :: listarGerentes(){
     }
 }
 
+// --- MÉTODOS DE ASSOCIAÇÃO E TRANSAÇÃO ---
+
+// Cria o vínculo de agregação entre a classe Gerente e a classe Cliente
 void Menu :: associarGerenteCliente(){
     cout << "\n --- ASSOCIAR GERENTE A CLIENTE ---" << endl;
 
@@ -187,6 +198,7 @@ void Menu :: associarGerenteCliente(){
     cout << "Digite o número do Gerente Desejado: ";
     cin >> idGerente;
 
+    // Validação de acesso ao vetor (evita segmentation fault)
     if(idGerente < 0 || idGerente >= (int)gerentes.size()){
         cout << "Erro: Gerente inválido." << endl;
         return;
@@ -250,6 +262,7 @@ void Menu :: extratoCliente(){
     }
 }
 
+// Método central da lógica bancária: Manipula saldos e histórico
 void Menu :: criarTransacao(){
     cout <<"\n --- NOVA TRANSAÇÃO --- " << endl;
 
@@ -383,9 +396,9 @@ void Menu :: criarTransacao(){
 
 }
 
-// Método para listar os clientes cadastrados
+// Destrutor: Fundamental em POO para limpar a memória alocada dinamicamente (Heap) com 'new'
 Menu :: ~Menu() {
-    // Liberar memória alocada para clientes
+    // Itera sobre os vetores e libera a memória para evitar vazamento (Memory Leaks)
     for (Cliente* cliente : Todosclientes) {
         delete cliente;
     }
@@ -645,6 +658,7 @@ void Menu :: menuCartao(){
                     break;
                 }
 
+                // Toggle para inverter o status de bloqueio do cartão
                 if(cartao->getBloqueado()){
                     cartao->desbloquear();
                     cout << ">>> Cartão DESBLOQUEADO com sucesso. <<<" << endl;
